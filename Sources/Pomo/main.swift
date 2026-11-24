@@ -30,10 +30,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, UNUser
     // Rebuilt only when opened, so the per-second tick never touches the menu.
     func menuNeedsUpdate(_ menu: NSMenu) {
         menu.removeAllItems()
-        if pomodoro == nil {
-            menu.addItem(item("Start", #selector(start)))
-        } else {
+        if let pomodoro {
+            // No action, so AppKit shows it greyed out as a plain label.
+            menu.addItem(NSMenuItem(title: pomodoro.sessionLabel, action: nil, keyEquivalent: ""))
             menu.addItem(item("Stop", #selector(stop)))
+        } else {
+            menu.addItem(item("Start", #selector(start)))
         }
         menu.addItem(.separator())
         let login = item("Launch at Login", #selector(toggleLaunchAtLogin))

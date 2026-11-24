@@ -26,9 +26,19 @@ let t0 = Date(timeIntervalSinceReferenceDate: 0)
 }
 
 @Test func breakIsFollowedByWork() throws {
-    let rest = Pomodoro(phase: .rest, endsAt: t0)
+    let rest = Pomodoro(session: 1, phase: .rest, endsAt: t0)
     let work = try #require(rest.next(at: t0))
-    #expect(work == Pomodoro.start(at: t0))
+    #expect(work.phase == .work)
+    #expect(work.endsAt == t0 + 50 * 60)
+}
+
+@Test func sessionCountsUpWhenWorkStartsAgain() throws {
+    let work = Pomodoro.start(at: t0)
+    let rest = try #require(work.next(at: work.endsAt))
+    let nextWork = try #require(rest.next(at: rest.endsAt))
+    #expect(work.sessionLabel == "Session 1: Focus")
+    #expect(rest.sessionLabel == "Session 1: Break")
+    #expect(nextWork.sessionLabel == "Session 2: Focus")
 }
 
 @Test func nextPhaseAfterSleepStartsFromWakeUp() throws {
@@ -44,7 +54,7 @@ let t0 = Date(timeIntervalSinceReferenceDate: 0)
 }
 
 @Test func survivesSaveAndLoad() throws {
-    let pomodoro = Pomodoro(phase: .rest, endsAt: t0 + 123)
+    let pomodoro = Pomodoro(session: 4, phase: .rest, endsAt: t0 + 123)
     let data = try JSONEncoder().encode(pomodoro)
     #expect(try JSONDecoder().decode(Pomodoro.self, from: data) == pomodoro)
 }

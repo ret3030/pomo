@@ -11,11 +11,13 @@ struct Pomodoro: Codable, Equatable {
     static let workDuration: TimeInterval = 50 * 60
     static let restDuration: TimeInterval = 10 * 60
 
+    /// Counts work and break pairs from 1, like "Session 3" in pomo.sh.
+    var session: Int
     var phase: Phase
     var endsAt: Date
 
     static func start(at now: Date) -> Pomodoro {
-        Pomodoro(phase: .work, endsAt: now + workDuration)
+        Pomodoro(session: 1, phase: .work, endsAt: now + workDuration)
     }
 
     func remaining(at now: Date) -> TimeInterval {
@@ -28,9 +30,14 @@ struct Pomodoro: Codable, Equatable {
     func next(at now: Date) -> Pomodoro? {
         guard now >= endsAt else { return nil }
         switch phase {
-        case .work: return Pomodoro(phase: .rest, endsAt: now + Self.restDuration)
-        case .rest: return Pomodoro(phase: .work, endsAt: now + Self.workDuration)
+        case .work: return Pomodoro(session: session, phase: .rest, endsAt: now + Self.restDuration)
+        case .rest: return Pomodoro(session: session + 1, phase: .work, endsAt: now + Self.workDuration)
         }
+    }
+
+    /// Menu line such as "Session 3: Focus", matching the headers in pomo.sh.
+    var sessionLabel: String {
+        "Session \(session): \(phase == .work ? "Focus" : "Break")"
     }
 
     /// Menu bar text such as "🍅 49:59". Rounds up so a fresh phase shows 50:00.
