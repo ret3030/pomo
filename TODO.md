@@ -7,7 +7,8 @@
 - [x] Notification and the Glass sound at every phase change.
 - [x] Launch at login via `SMAppService`, toggled from the menu.
 - [x] `.app` bundle with `LSUIElement`, built and ad hoc signed by `scripts/build.sh`.
-- [ ] App icon.
+- [x] Session number in the menu.
+- [x] App icon.
 
 Work and break lengths stay fixed at 50/10 on purpose.
 
