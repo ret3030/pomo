@@ -18,19 +18,3 @@ brew install --cask ret3030/tap/pomo
 ```
 
 Pomo runs on Apple Silicon Macs with macOS 14 or newer. It is signed ad hoc, not notarized; the cask clears the quarantine flag so macOS lets it start.
-
-## Use
-
-Click the 🍅 in the menu bar and choose Start. The menu shows the current session, for example "Session 3: Focus". Stop ends the loop and resets the count. Turn on Launch at Login to keep Pomo in the menu bar after every restart. On first launch, allow notifications so you see when a phase ends.
-
-## Build
-
-Building needs the Xcode Command Line Tools (`xcode-select --install`). Xcode itself is not needed.
-
-```sh
-scripts/build.sh                        # builds build/Pomo.app
-cp -R build/Pomo.app /Applications/
-open /Applications/Pomo.app
-```
-
-Run the tests with `scripts/test.sh`. To publish a new version, raise `CFBundleShortVersionString` in `Resources/Info.plist`, run `scripts/release.sh`, and put the printed `version` and `sha256` into `Casks/pomo.rb` in [ret3030/homebrew-tap](https://github.com/ret3030/homebrew-tap). `scripts/make-icon.sh` regenerates the icon, and `pomo.sh` is the original terminal version that Pomo grew out of.
